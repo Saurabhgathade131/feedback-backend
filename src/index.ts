@@ -16,7 +16,7 @@ connectDB();
 
 // 1. CORS Configuration (Should be first)
 const corsOptions = {
-    origin: '*',
+    origin: ['https://framework-migration.vercel.app', 'http://localhost:5173', 'http://localhost:3000'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,
