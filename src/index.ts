@@ -37,11 +37,17 @@ app.use('/api/', limiter);
 
 // Get all feedback
 app.get('/api/feedback', async (req: Request, res: Response) => {
+    console.log('GET /api/feedback request received');
     try {
         const feedback = await Feedback.find().sort({ createdAt: -1 });
+        console.log('Found feedback count:', feedback.length);
         res.json(feedback);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching feedback' });
+        console.error('Error fetching feedback:', error);
+        res.status(500).json({
+            message: 'Error fetching feedback',
+            error: error instanceof Error ? error.message : String(error)
+        });
     }
 });
 
