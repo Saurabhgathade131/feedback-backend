@@ -17,7 +17,7 @@ const FeedbackSchema: Schema = new Schema({
     timestamps: true,
     toJSON: {
         virtuals: true,
-        transform: (doc, ret) => {
+        transform: (doc: any, ret: any) => {
             ret.id = ret._id.toString();
             ret.timestamp = ret.createdAt;
             delete ret._id;
