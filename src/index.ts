@@ -28,6 +28,11 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 
+// Health Check
+app.get('/', (req: Request, res: Response) => {
+    res.json({ status: 'ok', message: 'Feedback Backend is running' });
+});
+
 // Rate Limiting
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes

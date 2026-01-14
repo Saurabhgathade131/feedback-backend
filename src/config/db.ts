@@ -19,10 +19,6 @@ const connectDB = async () => {
         } else {
             console.error('An unknown error occurred during MongoDB connection');
         }
-        // Don't exit process in dev mode, let ts-node-dev retry
-        if (process.env.NODE_ENV === 'production') {
-            process.exit(1);
-        }
     }
 };
 
