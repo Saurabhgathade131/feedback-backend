@@ -2,24 +2,29 @@ import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IFeedback extends Document {
     name: string;
-    text: string;
-    category: string;
-    status: 'pending' | 'reviewed' | 'resolved';
-    priority: 'low' | 'medium' | 'high';
-    step: string;
-    createdAt: Date;
-    updatedAt: Date;
+    feedback: string;
+    screen: string;
+    status: 'in-progress' | 'incorporated';
+    timestamp: Date;
 }
 
 const FeedbackSchema: Schema = new Schema({
     name: { type: String, required: true },
-    text: { type: String, required: true },
-    category: { type: String, default: 'General' },
-    status: { type: String, enum: ['pending', 'reviewed', 'resolved'], default: 'pending' },
-    priority: { type: String, enum: ['low', 'medium', 'high'], default: 'medium' },
-    step: { type: String, default: 'unknown' },
+    feedback: { type: String, required: true },
+    screen: { type: String, default: 'General' },
+    status: { type: String, enum: ['in-progress', 'incorporated'], default: 'in-progress' },
 }, {
     timestamps: true,
+    toJSON: {
+        virtuals: true,
+        transform: (doc, ret) => {
+            ret.id = ret._id.toString();
+            ret.timestamp = ret.createdAt;
+            delete ret._id;
+            delete ret.__v;
+            return ret;
+        }
+    }
 });
 
 export default mongoose.model<IFeedback>('Feedback', FeedbackSchema);

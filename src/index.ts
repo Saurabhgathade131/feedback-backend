@@ -15,7 +15,6 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 
-// Routes
 // Get all feedback
 app.get('/api/feedback', async (req: Request, res: Response) => {
     try {
@@ -29,19 +28,17 @@ app.get('/api/feedback', async (req: Request, res: Response) => {
 // Post new feedback
 app.post('/api/feedback', async (req: Request, res: Response) => {
     try {
-        const { name, text, category, priority, step } = req.body;
+        const { name, feedback, screen } = req.body;
 
-        if (!name || !text) {
+        if (!name || !feedback) {
             return res.status(400).json({ message: 'Name and feedback text are required' });
         }
 
         const newFeedback = new Feedback({
             name,
-            text,
-            category: category || 'General',
-            priority: priority || 'medium',
-            step: step || 'unknown',
-            status: 'pending'
+            feedback,
+            screen: screen || 'unknown',
+            status: 'in-progress'
         });
 
         const savedFeedback = await newFeedback.save();
@@ -57,7 +54,7 @@ app.patch('/api/feedback/:id', async (req: Request, res: Response) => {
         const { id } = req.params;
         const { status } = req.body;
 
-        if (!['pending', 'reviewed', 'resolved'].includes(status)) {
+        if (!['in-progress', 'incorporated'].includes(status)) {
             return res.status(400).json({ message: 'Invalid status' });
         }
 
