@@ -106,6 +106,8 @@ app.use((err: any, req: Request, res: Response, next: any) => {
     res.status(500).send('Something broke!');
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+export default app;
