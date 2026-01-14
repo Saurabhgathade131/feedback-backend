@@ -14,17 +14,22 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
-// Security Middleware
-app.use(helmet());
-
-// CORS Configuration
+// 1. CORS Configuration (Should be first)
 const corsOptions = {
-    origin: '*', // Allow all origins for development. In production, specify your frontend URL.
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    credentials: true,
     preflightContinue: false,
     optionsSuccessStatus: 204
 };
 app.use(cors(corsOptions));
+
+// 2. Security Middleware (Configured for CORS)
+app.use(helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginOpenerPolicy: { policy: "unsafe-none" }
+}));
 
 app.use(express.json());
 
