@@ -1,6 +1,8 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import connectDB from './config/db';
 import Feedback from './models/Feedback';
 
@@ -12,8 +14,26 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
-app.use(cors());
+// Security Middleware
+app.use(helmet());
+
+// CORS Configuration
+const corsOptions = {
+    origin: '*', // Allow all origins for development. In production, specify your frontend URL.
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204
+};
+app.use(cors(corsOptions));
+
 app.use(express.json());
+
+// Rate Limiting
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+});
+app.use('/api/', limiter);
 
 // Get all feedback
 app.get('/api/feedback', async (req: Request, res: Response) => {
@@ -72,6 +92,12 @@ app.patch('/api/feedback/:id', async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ message: 'Error updating feedback' });
     }
+});
+
+// Error handling middleware
+app.use((err: any, req: Request, res: Response, next: any) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
 });
 
 app.listen(PORT, () => {
