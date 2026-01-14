@@ -14,22 +14,16 @@ const PORT = process.env.PORT || 5000;
 // Connect to MongoDB
 connectDB();
 
-// 1. CORS Configuration (Should be first)
-const corsOptions = {
-    origin: ['https://framework-migration.vercel.app', 'http://localhost:5173', 'http://localhost:3000'],
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+// 1. CORS Configuration (Max Compatibility)
+app.use(cors({
+    origin: true, // Echo back whatever origin is requesting (Framework Migration)
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-    credentials: true,
-    preflightContinue: false,
-    optionsSuccessStatus: 204
-};
-app.use(cors(corsOptions));
-
-// 2. Security Middleware (Configured for CORS)
-app.use(helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-    crossOriginOpenerPolicy: { policy: "unsafe-none" }
+    credentials: true
 }));
+
+// 2. Temporarily disable Helmet to ensure it's not blocking headers
+// app.use(helmet({ ... }));
 
 app.use(express.json());
 
